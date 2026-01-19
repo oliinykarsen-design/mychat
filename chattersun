@@ -1,9 +1,9 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Infinity Ultra - Final</title>
+    <title>Nexus Infinity Ultra - Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
     <style>
@@ -12,112 +12,159 @@
             --input-bg: #2a3942; --text: #e9edef; --my-msg: #005c4b;
             --danger: #f15c5c; --online: #00ff1a; --read: #53bdeb; --secondary: #8696a0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background: var(--bg-dark); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
 
-        /* --- AUTH --- */
+        /* --- AUTH SCREEN --- */
         .auth-screen { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .auth-card { background: var(--panel); padding: 40px; border-radius: 24px; width: 380px; text-align: center; border: 1px solid #333; }
-        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #444; background: var(--input-bg); color: #fff; outline: none; }
-        .auth-btn { width: 100%; padding: 14px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .auth-card { background: var(--panel); padding: 40px; border-radius: 24px; width: 400px; text-align: center; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .auth-input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: var(--input-bg); color: #fff; outline: none; transition: 0.3s; }
+        .auth-input:focus { border-color: var(--primary); }
+        .auth-btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.2s; }
+        .auth-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .captcha-box { background: #111b21; padding: 10px; border-radius: 8px; margin: 10px 0; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 380px; background: #111b21; border-right: 1px solid #2c3943; display: flex; flex-direction: column; }
-        .sb-header { padding: 10px 16px; background: var(--panel); display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        /* --- MAIN LAYOUT --- */
+        .sidebar { width: 400px; background: #111b21; border-right: 1px solid #222; display: flex; flex-direction: column; }
+        .sb-header { padding: 12px 16px; background: var(--panel); display: flex; align-items: center; justify-content: space-between; height: 60px; }
         .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #333; cursor: pointer; }
-        .list-container { flex: 1; overflow-y: auto; }
-        .user-row { padding: 12px 16px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 15px; position: relative; transition: 0.2s; }
-        .user-row:hover { background: var(--input-bg); }
-        .online-dot { width: 10px; height: 10px; background: var(--online); border-radius: 50%; border: 2px solid #111b21; position: absolute; bottom: 14px; left: 42px; }
+        
+        .search-bar { padding: 8px 15px; background: #111b21; }
+        .search-inner { background: var(--input-bg); border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 10px; }
+        .search-inner input { background: none; border: none; color: white; outline: none; width: 100%; font-size: 0.9rem; }
 
-        /* --- CHAT AREA --- */
+        .list-container { flex: 1; overflow-y: auto; }
+        .user-row { padding: 12px 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 15px; position: relative; transition: 0.2s; }
+        .user-row:hover { background: #2a3942; }
+        .user-row.active { background: #2a3942; }
+        .online-dot { width: 12px; height: 12px; background: var(--online); border-radius: 50%; border: 2px solid #111b21; position: absolute; bottom: 12px; left: 45px; }
+
+        /* --- CHAT WINDOW --- */
         .chat-window { flex: 1; display: flex; flex-direction: column; background: #0b141a; position: relative; }
-        .msgs-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 4px; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-blend-mode: overlay; background-color: #0b141a; }
-        .bubble-wrap { display: flex; width: 100%; }
+        .chat-bg { position: absolute; inset: 0; background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); opacity: 0.06; pointer-events: none; }
+        
+        .msgs-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 4px; z-index: 1; scroll-behavior: smooth; }
+        .bubble-wrap { display: flex; width: 100%; margin-bottom: 2px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .bubble-wrap.me { justify-content: flex-end; }
-        .bubble { max-width: 65%; padding: 8px 12px; border-radius: 8px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.2); word-wrap: break-word; }
+        .bubble { max-width: 65%; padding: 8px 12px; border-radius: 8px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.2); font-size: 0.95rem; }
         .me .bubble { background: var(--my-msg); border-top-right-radius: 0; }
         .them .bubble { background: var(--panel); border-top-left-radius: 0; }
-        .img-msg { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
 
-        /* --- FOOTER & INPUT --- */
-        .footer { padding: 10px 16px; background: var(--panel); display: flex; align-items: center; gap: 12px; }
-        .input-box { flex: 1; background: var(--input-bg); padding: 10px 15px; border-radius: 20px; border: none; color: #fff; outline: none; font-size: 1rem; }
-        .recording-active { color: var(--danger) !important; animation: pulse 1s infinite; }
-        @keyframes pulse { 50% { opacity: 0.4; } }
+        .msg-meta { display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 0.7rem; color: var(--secondary); margin-top: 4px; }
+        .me .msg-meta { color: rgba(255,255,255,0.6); }
 
-        /* --- VIDEO CALL UI --- */
-        #call-screen { position: fixed; inset: 0; background: #000; z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .video-container { position: relative; width: 90%; max-width: 1200px; display: flex; gap: 10px; }
-        video { width: 50%; border-radius: 15px; background: #222; transform: scaleX(-1); border: 2px solid #333; }
-        .call-tools { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; }
-        .call-btn { width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; }
+        /* --- VOICE & AUDIO --- */
+        .voice-msg { display: flex; align-items: center; gap: 10px; min-width: 200px; padding: 5px 0; }
+        .voice-play { font-size: 1.5rem; cursor: pointer; color: var(--primary); }
+        .me .voice-play { color: #fff; }
 
-        #emoji-pop { position: absolute; bottom: 70px; left: 10px; display: none; z-index: 1000; }
+        /* --- INPUT AREA --- */
+        .footer { padding: 10px 16px; background: var(--panel); display: flex; align-items: center; gap: 15px; z-index: 2; }
+        .input-box { flex: 1; background: var(--input-bg); padding: 12px 16px; border-radius: 24px; border: none; color: #fff; outline: none; font-size: 1rem; }
+        
+        /* --- CALLS --- */
+        #call-ui { position: fixed; inset: 0; background: #0b141a; z-index: 10001; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 90%; max-width: 1000px; }
+        video { width: 100%; border-radius: 20px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; aspect-ratio: 16/9; }
+        .call-actions { margin-top: 40px; display: flex; gap: 25px; }
+
+        #emoji-pop { position: absolute; bottom: 70px; left: 10px; z-index: 1000; display: none; }
+        .typing-indicator { font-style: italic; font-size: 0.75rem; color: var(--primary); height: 15px; }
     </style>
 </head>
 <body>
 
-<audio id="snd-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+<audio id="snd-in" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
 <div id="auth-box" class="auth-screen">
     <div class="auth-card">
-        <h2 style="color:var(--primary); margin-bottom:20px">NEXUS INFINITY ULTRA</h2>
-        <div id="reg-inputs">
+        <h1 style="color:var(--primary); margin-bottom:20px; letter-spacing: 2px;">NEXUS INFINITY</h1>
+        <div id="reg-fields">
             <input type="text" id="a-tag" class="auth-input" placeholder="@нікнейм">
-            <input type="text" id="a-user" class="auth-input" placeholder="Ім'я">
+            <input type="text" id="a-user" class="auth-input" placeholder="Ваше ім'я">
         </div>
         <input type="email" id="a-mail" class="auth-input" placeholder="Email">
         <input type="password" id="a-pass" class="auth-input" placeholder="Пароль">
+        
+        <div class="captcha-box">
+            <input type="checkbox" id="a-bot" style="width:20px; height:20px; cursor:pointer">
+            <label for="a-bot">Я не робот (Захист від ботів)</label>
+        </div>
+
         <button class="auth-btn" onclick="runAuth('login')">УВІЙТИ</button>
-        <button class="auth-btn" style="background:none; border:1px solid var(--primary)" onclick="runAuth('reg')">РЕЄСТРАЦІЯ</button>
+        <button class="auth-btn" style="background:none; border:1px solid var(--primary); color:var(--primary)" onclick="runAuth('reg')">СТВОРИТИ АККАУНТ</button>
     </div>
 </div>
 
-<div id="call-screen">
-    <h2 id="call-info" style="margin-bottom:20px; color:var(--primary)">Відеодзвінок...</h2>
-    <div class="video-container">
-        <video id="local-v" autoplay muted playsinline></video>
-        <video id="remote-v" autoplay playsinline></video>
-        <div class="call-tools">
-            <button id="btn-answer" class="call-btn" style="background:#4cd964; display:none" onclick="acceptCall()"><i class="fas fa-phone"></i></button>
-            <button class="call-btn" style="background:#ff3b30" onclick="hangUp()"><i class="fas fa-phone-slash"></i></button>
-        </div>
+<div id="call-ui">
+    <h2 id="call-status" style="margin-bottom:20px">З'єднання...</h2>
+    <div class="video-grid">
+        <video id="v-local" autoplay muted playsinline></video>
+        <video id="v-remote" autoplay playsinline></video>
+    </div>
+    <div class="call-actions">
+        <button id="ans-btn" class="auth-btn" style="width:70px; height:70px; border-radius:50%; background:#4cd964" onclick="answerCall()">
+            <i class="fas fa-phone"></i>
+        </button>
+        <button class="auth-btn" style="width:70px; height:70px; border-radius:50%; background:#ff3b30" onclick="endCall()">
+            <i class="fas fa-phone-slash"></i>
+        </button>
     </div>
 </div>
 
 <div class="sidebar">
     <div class="sb-header">
-        <img id="my-avatar" class="avatar" src="">
-        <b id="my-name">...</b>
+        <img id="my-pic" class="avatar" src="">
+        <div style="flex:1; margin-left: 12px;"><b id="my-name-display">Завантаження...</b></div>
+        <i class="fas fa-ellipsis-v" style="cursor:pointer; color:var(--secondary); margin-right:15px"></i>
         <i class="fas fa-sign-out-alt" style="cursor:pointer; color:var(--secondary)" onclick="logout()"></i>
     </div>
-    <div id="contacts" class="list-container"></div>
+    <div class="search-bar">
+        <div class="search-inner">
+            <i class="fas fa-search" style="color:var(--secondary)"></i>
+            <input type="text" placeholder="Пошук або новий чат">
+        </div>
+    </div>
+    <div id="u-list" class="list-container"></div>
 </div>
 
 <div class="chat-window">
-    <header class="sb-header">
+    <div class="chat-bg"></div>
+    <header class="sb-header" style="z-index: 2; border-bottom: 1px solid rgba(255,255,255,0.05)">
         <div style="display:flex; align-items:center; gap:12px">
-            <img id="c-avatar" class="avatar" src="https://ui-avatars.com/api/?name=?">
+            <img id="c-pic" class="avatar" src="https://ui-avatars.com/api/?name=?&background=202c33&color=8696a0">
             <div>
-                <b id="c-title">Оберіть чат</b>
-                <div id="c-status" style="font-size:0.7rem; color:var(--primary)"></div>
+                <b id="c-name">Оберіть співрозмовника</b>
+                <div id="c-status" class="typing-indicator"></div>
             </div>
         </div>
-        <i id="v-call-trigger" class="fas fa-video" style="cursor:pointer; color:var(--primary); font-size:1.3rem; display:none" onclick="initiateCall()"></i>
+        <div style="display:flex; gap: 20px; color: var(--secondary); font-size: 1.2rem;">
+            <i id="call-btn" class="fas fa-video" style="cursor:pointer; display:none" onclick="startCall()"></i>
+            <i class="fas fa-search" style="cursor:pointer"></i>
+        </div>
     </header>
 
-    <div id="chat-msgs" class="msgs-container"></div>
+    <div id="msgs-view" class="msgs-container"></div>
+
+    <div id="reply-panel" style="display:none; padding:10px; background:var(--panel); border-left:4px solid var(--primary); margin:0 10px; border-radius:4px;">
+        <div style="display:flex; justify-content:space-between">
+            <div><small id="re-user-name" style="color:var(--primary); font-weight:bold"></small><div id="re-text-val" style="font-size:0.85rem; opacity:0.8"></div></div>
+            <i class="fas fa-times" onclick="closeReply()" style="cursor:pointer"></i>
+        </div>
+    </div>
 
     <div id="emoji-pop"><emoji-picker class="dark"></emoji-picker></div>
 
     <footer class="footer">
         <i class="far fa-smile" style="cursor:pointer; font-size:1.5rem; color:var(--secondary)" onclick="toggleEmoji()"></i>
-        <label for="file-in" style="cursor:pointer"><i class="fas fa-plus" style="font-size:1.3rem; color:var(--secondary)"></i></label>
-        <input type="file" id="file-in" style="display:none" accept="image/*" onchange="sendImage(this)">
-        <input type="text" id="msg-input" class="input-box" placeholder="Повідомлення..." autocomplete="off">
-        <i id="voice-trigger" class="fas fa-microphone" style="cursor:pointer; font-size:1.4rem; color:var(--secondary)"></i>
-        <i id="send-trigger" class="fas fa-paper-plane" style="display:none; color:var(--primary); cursor:pointer; font-size:1.4rem" onclick="submitMsg()"></i>
+        <i class="fas fa-plus" style="cursor:pointer; font-size:1.3rem; color:var(--secondary)"></i>
+        <input type="text" id="m-in" class="input-box" placeholder="Повідомлення..." autocomplete="off">
+        <div id="btn-group">
+            <i id="mic-btn" class="fas fa-microphone" style="cursor:pointer; font-size:1.4rem; color:var(--secondary)"></i>
+            <i id="send-btn" class="fas fa-paper-plane" style="display:none; color:var(--primary); cursor:pointer; font-size:1.4rem" onclick="sendMsg()"></i>
+        </div>
     </footer>
 </div>
 
@@ -126,247 +173,314 @@
     import { getDatabase, ref, push, set, onChildAdded, onValue, update, off, onDisconnect, serverTimestamp, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const config = {
+    // Твій конфіг Firebase
+    const firebaseConfig = {
         apiKey: "AIzaSyClFOMxAzvXcWFM9wlz6ZmtfvgOW14Vs5w",
         authDomain: "chattersun-174b5.firebaseapp.com",
         databaseURL: "https://chattersun-174b5-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "chattersun-174b5",
         storageBucket: "chattersun-174b5.firebasestorage.app",
         messagingSenderId: "786057798847",
-        appId: "1:786057798847:web:32a34d9abc22087289d20a"
+        appId: "1:786057798847:web:32a34d9abc22087289d20a",
+        measurementId: "G-DYZQE6VHBB"
     };
 
-    const app = initializeApp(config);
+    const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-    let me = null, activeChat = null, peerConn = null, stream = null, chatRef = null, mediaRec = null, audioChunks = [];
+    let me = null, activeID = null, replyData = null, pc = null, localStream = null, chatRef = null, recorder = null, chunks = [];
 
-    // --- AUTH ---
-    window.runAuth = async (mode) => {
+    // --- АВТОРИЗАЦІЯ ---
+    window.runAuth = async (type) => {
+        const botCheck = document.getElementById('a-bot').checked;
+        if(!botCheck) return alert("Будь ласка, підтвердіть, що ви не робот!");
+
         const email = document.getElementById('a-mail').value;
         const pass = document.getElementById('a-pass').value;
+        const name = document.getElementById('a-user').value;
+        const tag = document.getElementById('a-tag').value;
+
         try {
-            const res = mode === 'reg' ? await createUserWithEmailAndPassword(auth, email, pass) : await signInWithEmailAndPassword(auth, email, pass);
-            if(mode === 'reg') {
+            let res;
+            if(type === 'reg') {
+                if(!name || !tag) return alert("Заповніть всі поля!");
+                res = await createUserWithEmailAndPassword(auth, email, pass);
                 await set(ref(db, `v30/users/${res.user.uid}`), {
-                    uid: res.user.uid, name: document.getElementById('a-user').value, tag: document.getElementById('a-tag').value, online: true
+                    uid: res.user.uid, name, tag, online: true, lastSeen: serverTimestamp()
                 });
+            } else {
+                res = await signInWithEmailAndPassword(auth, email, pass);
             }
-            location.reload();
-        } catch(e) { alert(e.message); }
+        } catch(e) { alert("Помилка: " + e.message); }
     };
 
     onAuthStateChanged(auth, user => {
         if(user) {
             me = user;
             document.getElementById('auth-box').style.display = 'none';
-            const myRef = ref(db, `v30/users/${user.uid}`);
-            update(myRef, { online: true });
-            onDisconnect(myRef).update({ online: false, lastSeen: serverTimestamp() });
-            onValue(myRef, s => {
+            const uRef = ref(db, `v30/users/${user.uid}`);
+            
+            update(uRef, { online: true });
+            onDisconnect(uRef).update({ online: false, lastSeen: serverTimestamp() });
+
+            onValue(uRef, s => {
                 const d = s.val();
-                document.getElementById('my-name').innerText = d.name;
-                document.getElementById('my-avatar').src = `https://ui-avatars.com/api/?name=${d.name}&background=00a884&color=fff`;
+                if(d) {
+                    document.getElementById('my-name-display').innerText = d.name;
+                    document.getElementById('my-pic').src = `https://ui-avatars.com/api/?name=${d.name}&background=00a884&color=fff`;
+                }
             });
-            loadContacts();
-            listenInboundCalls();
+            loadList();
+            listenCalls();
         }
     });
 
     window.logout = () => signOut(auth).then(() => location.reload());
 
-    // --- MESSAGING ---
-    const input = document.getElementById('msg-input');
-    input.oninput = () => {
-        const hasVal = input.value.trim().length > 0;
-        document.getElementById('send-trigger').style.display = hasVal ? 'block' : 'none';
-        document.getElementById('voice-trigger').style.display = hasVal ? 'none' : 'block';
-    };
-
-    window.submitMsg = (payload = {}) => {
-        const text = input.value.trim();
-        if(!text && !payload.voice && !payload.img) return;
-        const room = me.uid < activeChat ? `${me.uid}_${activeChat}` : `${activeChat}_${me.uid}`;
-        push(ref(db, `v30/msgs/${room}`), {
-            sid: me.uid,
-            txt: text || null,
-            voice: payload.voice || null,
-            img: payload.img || null,
-            read: false,
-            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-        });
-        input.value = "";
-        input.dispatchEvent(new Event('input'));
-        document.getElementById('emoji-pop').style.display = 'none';
-    };
-
-    // --- FILES (IMAGE +) ---
-    window.sendImage = (el) => {
-        const file = el.files[0];
-        if(!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => submitMsg({ img: e.target.result });
-        reader.readAsDataURL(file);
-    };
-
-    // --- VOICE ---
-    const voiceBtn = document.getElementById('voice-trigger');
-    voiceBtn.onmousedown = async () => {
-        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRec = new MediaRecorder(s);
-        audioChunks = [];
-        mediaRec.ondataavailable = e => audioChunks.push(e.data);
-        mediaRec.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const r = new FileReader();
-            r.readAsDataURL(blob);
-            r.onloadend = () => submitMsg({ voice: r.result });
-            s.getTracks().forEach(t => t.stop());
-        };
-        mediaRec.start();
-        voiceBtn.classList.add('recording-active');
-    };
-    voiceBtn.onmouseup = () => {
-        if(mediaRec) {
-            mediaRec.stop();
-            voiceBtn.classList.remove('recording-active');
+    // --- ПОВІДОМЛЕННЯ ---
+    const mInput = document.getElementById('m-in');
+    mInput.oninput = () => {
+        const hasText = mInput.value.trim().length > 0;
+        document.getElementById('send-btn').style.display = hasText ? 'block' : 'none';
+        document.getElementById('mic-btn').style.display = hasText ? 'none' : 'block';
+        
+        if(activeID) {
+            const room = me.uid < activeID ? `${me.uid}_${activeID}` : `${activeID}_${me.uid}`;
+            set(ref(db, `v30/typing/${room}/${me.uid}`), hasText);
+            setTimeout(() => set(ref(db, `v30/typing/${room}/${me.uid}`), false), 3000);
         }
     };
 
-    // --- CHAT LOGIC ---
-    window.openChat = (uid, name, avatar) => {
+    window.sendMsg = (voice = null) => {
+        const txt = mInput.value.trim();
+        if(!txt && !voice) return;
+        const room = me.uid < activeID ? `${me.uid}_${activeID}` : `${activeID}_${me.uid}`;
+        
+        const msgData = {
+            sid: me.uid,
+            txt,
+            voice,
+            reply: replyData,
+            read: false,
+            time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+            timestamp: serverTimestamp()
+        };
+
+        push(ref(db, `v30/msgs/${room}`), msgData);
+        mInput.value = "";
+        closeReply();
+        mInput.dispatchEvent(new Event('input'));
+        document.getElementById('emoji-pop').style.display = 'none';
+    };
+
+    // --- ГОЛОСОВІ ---
+    let micBtn = document.getElementById('mic-btn');
+    micBtn.onmousedown = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recorder = new MediaRecorder(stream);
+            chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = () => sendMsg(reader.result);
+                stream.getTracks().forEach(t => t.stop());
+            };
+            recorder.start();
+            micBtn.style.color = 'var(--danger)';
+            micBtn.classList.add('fa-beat');
+        } catch(e) { alert("Доступ до мікрофону заборонено"); }
+    };
+
+    micBtn.onmouseup = () => {
+        if(recorder && recorder.state !== 'inactive') {
+            recorder.stop();
+            micBtn.style.color = 'var(--secondary)';
+            micBtn.classList.remove('fa-beat');
+        }
+    };
+
+    // --- ЧАТ ---
+    window.openChat = (id, name, pic) => {
         if(chatRef) off(chatRef);
-        activeChat = uid;
-        document.getElementById('c-title').innerText = name;
-        document.getElementById('c-avatar').src = avatar;
-        document.getElementById('v-call-trigger').style.display = 'block';
+        activeID = id;
+        document.getElementById('c-name').innerText = name;
+        document.getElementById('c-pic').src = pic;
+        document.getElementById('call-btn').style.display = 'block';
         
-        const room = me.uid < uid ? `${me.uid}_${uid}` : `${uid}_${me.uid}`;
-        const container = document.getElementById('chat-msgs');
-        container.innerHTML = "";
+        const room = me.uid < id ? `${me.uid}_${id}` : `${id}_${me.uid}`;
+        const view = document.getElementById('msgs-view');
+        view.innerHTML = "";
         
+        // Слідкуємо за друкуванням
+        onValue(ref(db, `v30/typing/${room}/${id}`), s => {
+            document.getElementById('c-status').innerText = s.val() ? "друкує..." : "";
+        });
+
         chatRef = ref(db, `v30/msgs/${room}`);
         onChildAdded(chatRef, s => {
             const d = s.val();
             const isMe = d.sid === me.uid;
+            
+            // Позначаємо як прочитано
             if(!isMe && !d.read) update(ref(db, `v30/msgs/${room}/${s.key}`), { read: true });
 
-            const div = document.createElement('div');
-            div.className = `bubble-wrap ${isMe ? 'me' : 'them'}`;
-            div.innerHTML = `
-                <div class="bubble">
-                    ${d.img ? `<img src="${d.img}" class="img-msg" onclick="window.open('${d.img}')">` : ''}
-                    ${d.txt ? `<div>${d.txt}</div>` : ''}
-                    ${d.voice ? `<audio controls src="${d.voice}" style="height:30px; width:200px; margin-top:5px"></audio>` : ''}
-                    <div style="font-size:0.6rem; text-align:right; opacity:0.6; margin-top:4px">
-                        ${d.time} ${isMe ? `<i class="fas fa-check-double" style="color:${d.read ? '#53bdeb' : '#8696a0'}"></i>` : ''}
+            const wrap = document.createElement('div');
+            wrap.className = `bubble-wrap ${isMe ? 'me' : 'them'}`;
+            
+            let content = d.txt ? `<div>${d.txt}</div>` : '';
+            if(d.voice) {
+                content = `<div class="voice-msg"><i class="fas fa-play-circle voice-play" onclick="playVoice(this, '${d.voice}')"></i><div style="width:120px; height:2px; background:rgba(255,255,255,0.2); position:relative"></div></div>`;
+            }
+
+            wrap.innerHTML = `
+                <div class="bubble" ondblclick="initReply('${isMe ? 'Ви' : name}','${d.txt||'Голосове'}')">
+                    ${d.reply ? `<div style="background:rgba(0,0,0,0.1); padding:5px; border-left:3px solid var(--primary); margin-bottom:5px; font-size:0.8rem"><b>${d.reply.u}</b><br>${d.reply.t}</div>` : ''}
+                    ${content}
+                    <div class="msg-meta">
+                        ${d.time} 
+                        ${isMe ? `<i class="fas fa-check-double" style="color:${d.read ? 'var(--read)' : 'inherit'}"></i>` : ''}
                     </div>
                 </div>`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-            if(!isMe) document.getElementById('snd-msg').play().catch(()=>{});
+            
+            view.appendChild(wrap);
+            view.scrollTop = view.scrollHeight;
+            if(!isMe) document.getElementById('snd-in').play().catch(()=>{});
         });
     };
 
-    // --- VIDEO CALLS (STABLE) ---
-    const iceServers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+    window.playVoice = (el, src) => {
+        const a = new Audio(src);
+        a.play();
+        el.classList.replace('fa-play-circle', 'fa-pause-circle');
+        a.onended = () => el.classList.replace('fa-pause-circle', 'fa-play-circle');
+    };
 
-    window.initiateCall = async () => {
-        document.getElementById('call-screen').style.display = 'flex';
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        document.getElementById('local-v').srcObject = stream;
+    // --- ДЗВІНКИ (WebRTC) ---
+    window.startCall = async () => {
+        document.getElementById('call-ui').style.display = 'flex';
+        document.getElementById('ans-btn').style.display = 'none';
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        document.getElementById('v-local').srcObject = localStream;
 
-        peerConn = new RTCPeerConnection(iceServers);
-        stream.getTracks().forEach(t => peerConn.addTrack(t, stream));
+        pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
 
-        peerConn.onicecandidate = e => {
-            if(e.candidate) push(ref(db, `v30/calls/${activeChat}/ice`), e.candidate.toJSON());
+        pc.onicecandidate = e => {
+            if(e.candidate) push(ref(db, `v30/calls/${activeID}/cand`), e.candidate.toJSON());
         };
-        peerConn.ontrack = e => document.getElementById('remote-v').srcObject = e.streams[0];
+        pc.ontrack = e => document.getElementById('v-remote').srcObject = e.streams[0];
 
-        const offer = await peerConn.createOffer();
-        await peerConn.setLocalDescription(offer);
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
         
-        await set(ref(db, `v30/calls/${activeChat}/signal`), {
-            offer, from: me.uid, name: document.getElementById('my-name').innerText
+        await set(ref(db, `v30/calls/${activeID}/main`), {
+            offer, from: me.uid, name: document.getElementById('my-name-display').innerText
         });
 
-        onValue(ref(db, `v30/calls/${activeChat}/answer`), s => {
-            if(s.val()) peerConn.setRemoteDescription(new RTCSessionDescription(s.val()));
+        onValue(ref(db, `v30/calls/${activeID}/ans`), s => {
+            if(s.val()) pc.setRemoteDescription(new RTCSessionDescription(s.val()));
         });
     };
 
-    function listenInboundCalls() {
-        onValue(ref(db, `v30/calls/${me.uid}/signal`), async s => {
+    function listenCalls() {
+        onValue(ref(db, `v30/calls/${me.uid}/main`), async s => {
             const data = s.val();
             if(data) {
-                document.getElementById('call-screen').style.display = 'flex';
-                document.getElementById('btn-answer').style.display = 'block';
-                document.getElementById('call-info').innerText = `Дзвінок від ${data.name}`;
-                activeChat = data.from;
+                document.getElementById('call-ui').style.display = 'flex';
+                document.getElementById('ans-btn').style.display = 'block';
+                document.getElementById('call-status').innerText = `Відеодзвінок від ${data.name}`;
             }
         });
     }
 
-    window.acceptCall = async () => {
-        document.getElementById('btn-answer').style.display = 'none';
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        document.getElementById('local-v').srcObject = stream;
+    window.answerCall = async () => {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        document.getElementById('v-local').srcObject = localStream;
+        document.getElementById('ans-btn').style.display = 'none';
 
-        peerConn = new RTCPeerConnection(iceServers);
-        stream.getTracks().forEach(t => peerConn.addTrack(t, stream));
-        peerConn.ontrack = e => document.getElementById('remote-v').srcObject = e.streams[0];
-        peerConn.onicecandidate = e => {
-            if(e.candidate) push(ref(db, `v30/calls/${activeChat}/ice`), e.candidate.toJSON());
-        };
+        pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+        pc.ontrack = e => document.getElementById('v-remote').srcObject = e.streams[0];
 
-        const signalSnap = await onValue(ref(db, `v30/calls/${me.uid}/signal`), async s => {
-            const d = s.val();
-            await peerConn.setRemoteDescription(new RTCSessionDescription(d.offer));
-            const ans = await peerConn.createAnswer();
-            await peerConn.setLocalDescription(ans);
-            await set(ref(db, `v30/calls/${d.from}/answer`), ans);
+        const snap = await onValue(ref(db, `v30/calls/${me.uid}/main`), async s => {
+            const data = s.val();
+            if(data) {
+                await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+                const ans = await pc.createAnswer();
+                await pc.setLocalDescription(ans);
+                await set(ref(db, `v30/calls/${data.from}/ans`), ans);
+            }
         }, { onlyOnce: true });
 
-        onChildAdded(ref(db, `v30/calls/${me.uid}/ice`), s => {
-            peerConn.addIceCandidate(new RTCIceCandidate(s.val())).catch(e => {});
+        onChildAdded(ref(db, `v30/calls/${me.uid}/cand`), s => {
+            pc.addIceCandidate(new RTCIceCandidate(s.val()));
         });
     };
 
-    window.hangUp = () => {
-        if(peerConn) peerConn.close();
-        if(stream) stream.getTracks().forEach(t => t.stop());
+    window.endCall = () => {
+        if(pc) pc.close();
         remove(ref(db, `v30/calls/${me.uid}`));
         location.reload();
     };
 
-    // --- UI HELPERS ---
+    // --- UI ТА ДОПОМІЖНІ ФУНКЦІЇ ---
+    window.initReply = (u, t) => {
+        replyData = {u, t};
+        document.getElementById('re-user-name').innerText = u;
+        document.getElementById('re-text-val').innerText = t;
+        document.getElementById('reply-panel').style.display = 'block';
+        mInput.focus();
+    };
+    window.closeReply = () => { replyData = null; document.getElementById('reply-panel').style.display = 'none'; };
+    
     window.toggleEmoji = () => {
         const p = document.getElementById('emoji-pop');
         p.style.display = p.style.display === 'block' ? 'none' : 'block';
     };
+    
     document.querySelector('emoji-picker').addEventListener('emoji-click', e => {
-        input.value += e.detail.unicode;
-        input.dispatchEvent(new Event('input'));
+        mInput.value += e.detail.unicode;
+        mInput.dispatchEvent(new Event('input'));
     });
 
-    function loadContacts() {
+    function loadList() {
         onValue(ref(db, 'v30/users'), snap => {
-            const list = document.getElementById('contacts');
+            const list = document.getElementById('u-list');
             list.innerHTML = "";
             snap.forEach(c => {
                 const u = c.val();
                 if(u.uid === me.uid) return;
-                const avatar = `https://ui-avatars.com/api/?name=${u.name}&background=random`;
-                const div = document.createElement('div');
-                div.className = 'user-row';
-                div.innerHTML = `
-                    <img src="${avatar}" class="avatar">
+                
+                const pic = `https://ui-avatars.com/api/?name=${u.name}&background=random&color=fff`;
+                const row = document.createElement('div');
+                row.className = 'user-row';
+                
+                let lastSeenText = u.online ? 'у мережі' : 'був(ла) нещодавно';
+                if(!u.online && u.lastSeen) {
+                    const d = new Date(u.lastSeen);
+                    lastSeenText = `був(ла) о ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+                }
+
+                row.innerHTML = `
+                    <img src="${pic}" class="avatar">
                     ${u.online ? '<div class="online-dot"></div>' : ''}
-                    <div><b>${u.name}</b><br><small style="color:var(--secondary)">${u.online ? 'у мережі' : 'немає на місці'}</small></div>`;
-                div.onclick = () => openChat(u.uid, u.name, avatar);
-                list.appendChild(div);
+                    <div style="flex:1">
+                        <div style="display:flex; justify-content:space-between">
+                            <b>${u.name}</b>
+                        </div>
+                        <div style="font-size:0.8rem; color:${u.online ? 'var(--primary)' : 'var(--secondary)'}">${lastSeenText}</div>
+                    </div>`;
+                
+                row.onclick = () => {
+                    document.querySelectorAll('.user-row').forEach(r => r.classList.remove('active'));
+                    row.classList.add('active');
+                    openChat(u.uid, u.name, pic);
+                };
+                list.appendChild(row);
             });
         });
     }
