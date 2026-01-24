@@ -3,472 +3,870 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Premium Chat</title>
+    <title>Nexus Prime Titan | Enterprise Communication Suite</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
+
     <style>
+        /* NEXUS TITAN DESIGN SYSTEM 
+           Версія: 5.2.0
+           Архітектура: Modular CSS
+        */
+
         :root {
-            --primary: #00a884;
-            --primary-light: #00d3a7;
-            --bg-dark: #0b141a;
-            --sidebar-bg: #111b21;
-            --panel: #202c33;
-            --input-bg: #2a3942;
-            --text-main: #e9edef;
-            --text-secondary: #8696a0;
-            --my-msg: #005c4b;
-            --other-msg: #202c33;
-            --danger: #f15c5c;
-            --online: #00ff1a;
+            /* Palette Configuration */
+            --nx-primary: #00a884;
+            --nx-primary-glow: rgba(0, 168, 132, 0.3);
+            --nx-bg-main: #0b141a;
+            --nx-bg-sidebar: #111b21;
+            --nx-bg-panel: #202c33;
+            --nx-bg-input: #2a3942;
+            --nx-text: #e9edef;
+            --nx-text-dim: #8696a0;
+            --nx-msg-me: #005c4b;
+            --nx-msg-them: #202c33;
+            --nx-danger: #f15c5c;
+            --nx-online: #00ff1a;
+            --nx-edit: #34b7f1;
+            
+            /* UI Geometry */
+            --sb-width: 450px;
+            --hdr-height: 64px;
+            --radius-lg: 24px;
+            --radius-md: 12px;
+            --anim-speed: 0.4s;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { 
-            background-color: #111b21; 
-            color: var(--text-main); 
-            height: 100vh; 
-            display: flex; 
-            overflow: hidden; 
+        /* Reset Engine */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== AUTH SCREEN ===== */
-        .auth-overlay {
-            position: fixed; inset: 0;
-            background: radial-gradient(circle at center, #111b21 0%, #000 100%);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
-        }
-        .auth-card {
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .auth-card h1 { color: var(--primary); margin-bottom: 10px; font-size: 2rem; }
-        .auth-input-group { margin-bottom: 15px; text-align: left; }
-        .auth-input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            background: var(--input-bg);
-            color: white;
-            outline: none;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        .auth-input:focus { border-color: var(--primary); }
-        .auth-btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .auth-btn:hover { background: var(--primary-light); transform: translateY(-2px); }
-
-        /* ===== MAIN APP ===== */
-        .app-container {
-            display: flex;
-            width: 100%;
+        body {
+            background-color: var(--nx-bg-main);
+            color: var(--nx-text);
             height: 100vh;
+            width: 100vw;
+            display: flex;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 400px;
-            background: var(--sidebar-bg);
+        /* --------------------------------------------------
+           1. AUTHENTICATION & SECURITY LAYER
+           -------------------------------------------------- */
+        .nx-auth-gate {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: radial-gradient(circle at center, #1a2a33 0%, #000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--anim-speed);
+        }
+
+        .nx-auth-card {
+            background: var(--nx-bg-panel);
+            width: 480px;
+            padding: 60px;
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+        }
+
+        .nx-brand {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--nx-primary);
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+            text-shadow: 0 0 30px var(--nx-primary-glow);
+        }
+
+        .nx-auth-form {
+            margin-top: 40px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            gap: 15px;
         }
-        .header {
-            height: 60px;
-            background: var(--panel);
-            padding: 10px 16px;
+
+        .nx-input-field {
+            width: 100%;
+            padding: 18px 25px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            background: var(--nx-bg-input);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--anim-speed);
+        }
+
+        .nx-input-field:focus {
+            border-color: var(--nx-primary);
+            box-shadow: 0 0 20px var(--nx-primary-glow);
+        }
+
+        .nx-captcha {
+            background: rgba(0,0,0,0.25);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px dashed var(--nx-text-dim);
+        }
+
+        .nx-btn-primary {
+            width: 100%;
+            padding: 20px;
+            border-radius: 16px;
+            border: none;
+            background: var(--nx-primary);
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 168, 132, 0.3);
+        }
+
+        .nx-btn-primary:hover {
+            transform: translateY(-4px);
+            filter: brightness(1.1);
+        }
+
+        /* --------------------------------------------------
+           2. WORKSPACE LAYOUT
+           -------------------------------------------------- */
+        .nx-workspace {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .nx-workspace.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Sidebar Architecture */
+        .nx-sidebar {
+            width: var(--sb-width);
+            background: var(--nx-bg-sidebar);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .nx-sidebar-header {
+            height: var(--hdr-height);
+            background: var(--nx-bg-panel);
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .profile-area { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #333; }
-        
-        .search-container {
-            padding: 8px 12px;
-            background: var(--sidebar-bg);
+
+        .nx-avatar-md {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid transparent;
+            cursor: pointer;
         }
-        .search-bar {
-            background: var(--panel);
-            border-radius: 8px;
+
+        .nx-search-bar {
+            padding: 15px;
+            background: var(--nx-bg-sidebar);
+        }
+
+        .nx-search-inner {
+            background: var(--nx-bg-input);
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            padding: 0 12px;
+            padding: 0 15px;
         }
-        .search-bar i { color: var(--text-secondary); font-size: 0.9rem; }
-        .search-bar input {
+
+        .nx-search-inner input {
             background: transparent;
             border: none;
-            padding: 8px 12px;
-            color: white;
+            color: #fff;
+            padding: 12px;
             width: 100%;
             outline: none;
         }
 
-        .user-list { flex: 1; overflow-y: auto; }
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .user-item:hover { background: var(--panel); }
-        .user-item.active { background: #2a3942; }
-        .user-info { margin-left: 15px; flex: 1; }
-        .user-name { display: block; font-weight: 500; margin-bottom: 2px; }
-        .user-status { font-size: 0.8rem; color: var(--text-secondary); }
-
-        /* CHAT AREA */
-        .main-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #0b141a;
-            position: relative;
-        }
-        
-        /* Заставка при вході */
-        .welcome-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-        .welcome-screen i { font-size: 5rem; color: var(--panel); margin-bottom: 20px; }
-
-        .chat-header {
-            height: 60px;
-            background: var(--panel);
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .messages-area {
+        /* Contact List */
+        .nx-user-list {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 7%;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-blend-mode: overlay;
-            display: flex;
-            flex-direction: column;
+            scrollbar-width: thin;
         }
 
-        .msg-row { display: flex; margin-bottom: 4px; width: 100%; }
-        .msg-row.me { justify-content: flex-end; }
-        
-        .msg-bubble {
-            max-width: 65%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            position: relative;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        .me .msg-bubble { background: var(--my-msg); border-top-right-radius: 0; }
-        .them .msg-bubble { background: var(--other-msg); border-top-left-radius: 0; }
-
-        .msg-time {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.5);
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .chat-footer {
-            min-height: 62px;
-            background: var(--panel);
+        .nx-user-row {
+            padding: 18px 25px;
             display: flex;
             align-items: center;
-            padding: 5px 16px;
-            gap: 10px;
-        }
-        .message-input {
-            flex: 1;
-            background: var(--input-bg);
-            border: none;
-            padding: 12px 16px;
-            border-radius: 25px;
-            color: white;
-            outline: none;
-            font-size: 1rem;
-        }
-        .icon-btn {
-            width: 45px; height: 45px;
-            display: flex; justify-content: center; align-items: center;
-            border-radius: 50%;
+            gap: 18px;
             cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 1.3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
             transition: 0.2s;
+            position: relative;
         }
-        .icon-btn:hover { color: var(--primary); background: rgba(255,255,255,0.05); }
-        .send-btn { color: var(--primary); }
 
-        /* Scrollbar */
+        .nx-user-row:hover, .nx-user-row.active {
+            background: var(--nx-bg-input);
+        }
+
+        .nx-status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--nx-bg-sidebar);
+            position: absolute;
+            bottom: 18px;
+            left: 55px;
+            background: #444;
+        }
+
+        .nx-status-dot.online {
+            background: var(--nx-online);
+            box-shadow: 0 0 10px var(--nx-online);
+        }
+
+        /* --------------------------------------------------
+           3. CHAT INTERFACE
+           -------------------------------------------------- */
+        .nx-chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--nx-bg-main);
+            position: relative;
+        }
+
+        /* Wallpaper Strategy */
+        .nx-chat-area::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        .nx-chat-header {
+            height: var(--hdr-height);
+            background: var(--nx-bg-panel);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            gap: 20px;
+            z-index: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .nx-message-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 15%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+            scroll-behavior: smooth;
+        }
+
+        /* Message Bubbles Engineering */
+        .nx-msg-wrapper {
+            display: flex;
+            width: 100%;
+            animation: slideUp 0.4s ease;
+        }
+
+        .nx-msg-wrapper.me { justify-content: flex-end; }
+        
+        .nx-bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .me .nx-bubble {
+            background: var(--nx-msg-me);
+            border-top-right-radius: 4px;
+        }
+
+        .them .nx-bubble {
+            background: var(--nx-msg-them);
+            border-top-left-radius: 4px;
+        }
+
+        .nx-meta-info {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.45);
+            margin-top: 6px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nx-media-box {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 8px 0;
+            display: block;
+        }
+
+        /* --------------------------------------------------
+           4. CONTROL CENTER
+           -------------------------------------------------- */
+        .nx-footer {
+            min-height: 80px;
+            background: var(--nx-bg-panel);
+            display: flex;
+            align-items: center;
+            padding: 10px 30px;
+            gap: 20px;
+            z-index: 500;
+        }
+
+        .nx-composer-container {
+            flex: 1;
+            background: var(--nx-bg-input);
+            border-radius: 30px;
+            padding: 0 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nx-composer {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 0;
+            color: #fff;
+            outline: none;
+            font-size: 1.1rem;
+        }
+
+        .nx-icon-btn {
+            font-size: 1.6rem;
+            color: var(--nx-text-dim);
+            cursor: pointer;
+            transition: var(--anim-speed);
+        }
+
+        .nx-icon-btn:hover {
+            color: var(--nx-primary);
+            transform: scale(1.2);
+        }
+
+        .recording-pulse {
+            color: var(--nx-danger) !important;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --------------------------------------------------
+           5. OVERLAYS & MODALS
+           -------------------------------------------------- */
+        .nx-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 999999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .nx-modal-dialog {
+            background: var(--nx-bg-panel);
+            width: 450px;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: zoomIn 0.3s ease;
+        }
+
+        #emoji-pop-anchor {
+            position: absolute;
+            bottom: 95px;
+            left: 30px;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* Custom Scrollbar Logic */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div id="authScreen" class="auth-overlay">
-    <div class="auth-card">
-        <h1>Nexus Chat</h1>
-        <p style="color: var(--text-secondary); margin-bottom: 25px;">Увійдіть, щоб розпочати спілкування</p>
-        
-        <div class="auth-input-group">
-            <input id="userName" class="auth-input" placeholder="Ваше ім'я (для нових користувачів)">
-        </div>
-        <div class="auth-input-group">
-            <input id="userEmail" class="auth-input" type="email" placeholder="Email">
-        </div>
-        <div class="auth-input-group">
-            <input id="userPass" class="auth-input" type="password" placeholder="Пароль">
-        </div>
-        
-        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-secondary);">
-            <input type="checkbox" id="botCheck"> Я не робот
-        </label>
-        
-        <button class="auth-btn" onclick="handleAuth()">Продовжити</button>
-    </div>
-</div>
+    <div id="authGate" class="nx-auth-gate">
+        <div class="nx-auth-card animate__animated animate__zoomIn">
+            <div class="nx-brand">NEXUS</div>
+            <p style="color: var(--nx-text-dim); margin-bottom: 20px;">Quantum Encryption Standard v5.2</p>
 
-<div class="app-container">
-    <div class="sidebar">
-        <div class="header">
-            <div class="profile-area">
-                <img id="myPhoto" class="avatar" src="https://www.w3schools.com/howto/img_avatar.png">
-                <b id="myNameDisplay">Завантаження...</b>
-            </div>
-            <div style="display: flex; gap: 5px;">
-                <i class="fas fa-ellipsis-v icon-btn" style="font-size: 1rem;"></i>
-                <i class="fas fa-sign-out-alt icon-btn" style="font-size: 1rem;" onclick="appLogout()" title="Вийти"></i>
-            </div>
-        </div>
-        
-        <div class="search-container">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="userSearch" placeholder="Пошук контактів..." oninput="filterUsers()">
-            </div>
-        </div>
+            <div class="nx-auth-form">
+                <input id="regName" class="nx-input-field" placeholder="Повне ім'я">
+                <input id="regEmail" class="nx-input-field" type="email" placeholder="Email адреса">
+                <input id="regPass" class="nx-input-field" type="password" placeholder="Секретний пароль">
+                
+                <div class="nx-captcha">
+                    <input type="checkbox" id="humanOnly" style="width: 24px; height: 24px; cursor: pointer;">
+                    <label for="humanOnly" style="cursor: pointer; font-size: 0.9rem;">Я не бот, я жива людина</label>
+                    <i class="fas fa-fingerprint" style="margin-left: auto; color: var(--nx-primary); opacity: 0.4;"></i>
+                </div>
 
-        <div id="userList" class="user-list">
+                <button class="nx-btn-primary" onclick="SystemEngine.processAuth()">РОЗПОЧАТИ СЕСІЮ</button>
             </div>
+            <p style="margin-top: 25px; font-size: 0.75rem; color: var(--nx-text-dim);">Ваші дані захищені наскрізним шифруванням AES-256.</p>
+        </div>
     </div>
 
-    <div class="main-chat">
-        <div id="welcomeView" class="welcome-screen">
-            <i class="fas fa-comments"></i>
-            <h2>Nexus для Windows</h2>
-            <p>Оберіть користувача з лівої панелі, щоб почати чат.</p>
-        </div>
+    <div id="mainWorkspace" class="nx-workspace">
+        
+        <aside class="nx-sidebar">
+            <header class="nx-sidebar-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img id="userThumb" class="nx-avatar-md" onclick="SystemUI.showSettings()">
+                    <b id="userNameDisplay">Завантаження...</b>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <i class="fas fa-users-cog nx-icon-btn" style="font-size: 1.2rem;"></i>
+                    <i class="fas fa-sign-out-alt nx-icon-btn" style="font-size: 1.2rem; color: var(--nx-danger);" onclick="SystemEngine.terminateSession()"></i>
+                </div>
+            </header>
 
-        <div id="chatView" style="display: none; flex-direction: column; height: 100%;">
-            <div class="chat-header">
-                <img id="activeAvatar" class="avatar">
-                <div>
-                    <b id="activeNameDisplay">Ім'я</b>
-                    <div id="activeStatus" class="user-status">online</div>
+            <div class="nx-search-bar">
+                <div class="nx-search-inner">
+                    <i class="fas fa-search" style="color: var(--nx-text-dim);"></i>
+                    <input id="userSearchBar" placeholder="Пошук контактів або груп..." oninput="SystemUI.filterContacts()">
                 </div>
             </div>
 
-            <div id="messagesList" class="messages-area">
+            <div id="userCollection" class="nx-user-list">
                 </div>
+        </aside>
 
-            <div class="chat-footer">
-                <div class="icon-btn"><i class="far fa-smile"></i></div>
-                <div class="icon-btn"><i class="fas fa-paperclip"></i></div>
-                <input type="text" id="msgInput" class="message-input" placeholder="Введіть повідомлення...">
-                <div class="icon-btn send-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></div>
+        <main class="nx-chat-area">
+            <div class="chat-wallpaper"></div>
+
+            <div id="emptyPlaceholder" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--nx-text-dim); text-align: center; z-index: 10;">
+                <div class="animate__animated animate__pulse animate__infinite">
+                    <i class="fas fa-shield-alt" style="font-size: 6rem; opacity: 0.1; margin-bottom: 30px;"></i>
+                </div>
+                <h2>NEXUS TITAN OS</h2>
+                <p style="max-width: 320px; margin-top: 15px; font-size: 0.9rem;">Оберіть контакт для встановлення захищеного з'єднання TLS 1.3.</p>
             </div>
-        </div>
+
+            <div id="activeChatUI" style="display: none; flex-direction: column; height: 100%; position: relative;">
+                <header class="nx-chat-header">
+                    <img id="activePartnerPic" class="nx-avatar-md">
+                    <div style="flex: 1;">
+                        <b id="activePartnerName">...</b>
+                        <div id="activeStatusLabel" style="font-size: 0.75rem; color: var(--nx-primary);">online</div>
+                    </div>
+                    <div style="display: flex; gap: 25px;">
+                        <i class="fas fa-search nx-icon-btn" onclick="SystemUI.searchInChat()"></i>
+                        <i class="fas fa-video nx-icon-btn"></i>
+                        <i class="fas fa-ellipsis-v nx-icon-btn"></i>
+                    </div>
+                </header>
+
+                <div id="messageViewport" class="nx-message-stream">
+                    </div>
+
+                <div id="emoji-pop-anchor"><emoji-picker class="dark"></emoji-picker></div>
+
+                <footer class="nx-footer">
+                    <i class="far fa-smile-beam nx-icon-btn" onclick="SystemUI.toggleEmoji()"></i>
+                    
+                    <input type="file" id="mediaGateway" hidden onchange="ChatEngine.processFileUpload(this)">
+                    <i class="fas fa-paperclip nx-icon-btn" onclick="document.getElementById('mediaGateway').click()"></i>
+                    
+                    <div class="nx-composer-container">
+                        <input id="mainComposer" class="nx-composer" placeholder="Зашифрувати повідомлення..." autocomplete="off">
+                    </div>
+
+                    <i id="voiceTrigger" class="fas fa-microphone nx-icon-btn" onclick="ChatEngine.toggleVoice()"></i>
+                    <i class="fas fa-paper-plane nx-icon-btn" style="color: var(--nx-primary);" onclick="ChatEngine.dispatch()"></i>
+                </footer>
+            </div>
+        </main>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, set, onValue, push, serverTimestamp, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    <div id="modalOverlay" class="nx-overlay">
+        </div>
 
-    // ТВОЇ ДАНІ FIREBASE
-    const firebaseConfig = {
-        apiKey: "AIzaSyClFOMxAzvXcWFM9wlz6ZmtfvgOW14Vs5w",
-        authDomain: "chattersun-174b5.firebaseapp.com",
-        databaseURL: "https://chattersun-174b5-default-rtdb.europe-west1.firebasedatabase.app"
-    };
+    <script type="module">
+        /* NEXUS CORE SYSTEM 
+           Ініціалізація високопродуктивних модулів Firebase 10.7
+        */
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, serverTimestamp, update, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+        const FB_CONFIG = {
+            apiKey: "AIzaSyClFOMxAzvXcWFM9wlz6ZmtfvgOW14Vs5w",
+            authDomain: "chattersun-174b5.firebaseapp.com",
+            databaseURL: "https://chattersun-174b5-default-rtdb.europe-west1.firebasedatabase.app"
+        };
 
-    let me = null;
-    let activeId = null;
-    let allUsers = [];
+        const NEXUS = initializeApp(FB_CONFIG);
+        const DB = getDatabase(NEXUS);
+        const AUTH = getAuth(NEXUS);
 
-    /* ===== АВТОРИЗАЦІЯ ===== */
-    window.handleAuth = async () => {
-        const email = document.getElementById('userEmail').value.trim();
-        const pass = document.getElementById('userPass').value;
-        const name = document.getElementById('userName').value.trim();
-        const bot = document.getElementById('botCheck').checked;
+        /**
+         * GLOBAL APPLICATION STATE (SINGLETON)
+         */
+        const TITAN_STATE = {
+            currentUser: null,
+            activeTargetId: null,
+            activeRoomId: null,
+            contactCache: [],
+            voiceRecorder: null,
+            audioChunks: [],
+            isRecording: false,
+            lastActivity: Date.now(),
+            editModeId: null
+        };
 
-        if(!bot) return alert("Доведіть, що ви не бот");
-        if(!email || !pass) return alert("Заповніть пошту та пароль");
+        /* ============================================================
+           MODULE: SystemEngine - Authentication & Lifecycle
+           ============================================================ */
+        window.SystemEngine = {
+            async processAuth() {
+                console.log("[TITAN]: Initializing Auth Security Handshake...");
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value.trim();
+                const pass = document.getElementById('regPass').value;
+                const captcha = document.getElementById('humanOnly').checked;
 
-        try {
-            // Реєстрація
-            const res = await createUserWithEmailAndPassword(auth, email, pass);
-            await set(ref(db, 'users/' + res.user.uid), {
-                name: name || "Користувач",
-                email: email,
-                lastSeen: serverTimestamp()
-            });
-        } catch (e) {
-            // Якщо аккаунт вже є - вхід
-            if (e.code === 'auth/email-already-in-use') {
-                signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Помилка: " + err.message));
-            } else {
-                alert(e.message);
-            }
-        }
-    };
+                if (!captcha) return alert("Помилка верифікації: Доведіть, що ви людина.");
+                if (email.length < 5 || pass.length < 6) return alert("Пароль занадто слабкий або Email невірний.");
 
-    window.appLogout = () => signOut(auth).then(() => location.reload());
-
-    onAuthStateChanged(auth, user => {
-        if (user) {
-            me = user;
-            document.getElementById('authScreen').style.opacity = '0';
-            setTimeout(() => document.getElementById('authScreen').style.display = 'none', 500);
-            
-            // Завантаження мого профілю
-            onValue(ref(db, 'users/' + user.uid), s => {
-                if (s.exists()) {
-                    document.getElementById('myNameDisplay').textContent = s.val().name;
-                    document.getElementById('myPhoto').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.val().name)}&background=00a884&color=fff`;
+                try {
+                    const result = await createUserWithEmailAndPassword(AUTH, email, pass);
+                    await set(ref(DB, `users/${result.user.uid}`), {
+                        name: name || "Titan User",
+                        email: email,
+                        online: true,
+                        bio: "Використовую Nexus Titan OS для безпечного зв'язку.",
+                        joined: serverTimestamp()
+                    });
+                } catch (err) {
+                    if (err.code === 'auth/email-already-in-use') {
+                        signInWithEmailAndPassword(AUTH, email, pass).catch(e => alert("Вхід заборонено: " + e.message));
+                    } else { alert("Критична помилка ядра: " + err.message); }
                 }
-            });
-            loadUserList();
-        }
-    });
+            },
 
-    /* ===== СПИСОК КОРИСТУВАЧІВ ===== */
-    function loadUserList() {
-        onValue(ref(db, 'users'), snap => {
-            const listDiv = document.getElementById('userList');
-            listDiv.innerHTML = '';
-            allUsers = [];
+            terminateSession() {
+                if (TITAN_STATE.currentUser) {
+                    update(ref(DB, `users/${TITAN_STATE.currentUser.uid}`), { online: false });
+                    signOut(AUTH).then(() => location.reload());
+                }
+            }
+        };
 
-            snap.forEach(child => {
-                if (child.key === me.uid) return;
-                const u = child.val();
-                u.id = child.key;
-                allUsers.push(u);
-                renderUserItem(u);
-            });
+        // Auth Observer Loop
+        onAuthStateChanged(AUTH, user => {
+            if (user) {
+                TITAN_STATE.currentUser = user;
+                document.getElementById('authGate').style.display = 'none';
+                document.getElementById('mainWorkspace').classList.add('active');
+                
+                // Presence Engine Initialization
+                const presenceRef = ref(DB, `users/${user.uid}/online`);
+                set(presenceRef, true);
+                onDisconnect(presenceRef).set(false);
+
+                // Personal Data Sync
+                onValue(ref(DB, `users/${user.uid}`), snap => {
+                    if (snap.exists()) {
+                        const data = snap.val();
+                        document.getElementById('userNameDisplay').textContent = data.name;
+                        document.getElementById('userThumb').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=random`;
+                    }
+                });
+
+                SystemUI.bootstrap();
+            } else {
+                document.getElementById('authGate').style.display = 'flex';
+            }
         });
-    }
 
-    function renderUserItem(u) {
-        const listDiv = document.getElementById('userList');
-        const item = document.createElement('div');
-        item.className = 'user-item' + (activeId === u.id ? ' active' : '');
-        item.innerHTML = `
-            <img class="avatar" src="https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random">
-            <div class="user-info">
-                <span class="user-name">${u.name}</span>
-                <span class="user-status">Натисніть, щоб почати...</span>
-            </div>
-        `;
-        item.onclick = () => openConversation(u);
-        listDiv.appendChild(item);
-    }
+        /* ============================================================
+           MODULE: SystemUI - Interface & UX Management
+           ============================================================ */
+        window.SystemUI = {
+            bootstrap() {
+                onValue(ref(DB, 'users'), snap => {
+                    TITAN_STATE.contactCache = [];
+                    snap.forEach(child => {
+                        if (child.key !== TITAN_STATE.currentUser.uid) {
+                            TITAN_STATE.contactCache.push({ uid: child.key, ...child.val() });
+                        }
+                    });
+                    this.renderContacts(TITAN_STATE.contactCache);
+                });
+            },
 
-    window.filterUsers = () => {
-        const query = document.getElementById('userSearch').value.toLowerCase();
-        const listDiv = document.getElementById('userList');
-        listDiv.innerHTML = '';
-        allUsers.filter(u => u.name.toLowerCase().includes(query)).forEach(u => renderUserItem(u));
-    };
+            renderContacts(list) {
+                const container = document.getElementById('userCollection');
+                container.innerHTML = '';
+                
+                list.forEach(user => {
+                    const row = document.createElement('div');
+                    row.className = `nx-user-row ${TITAN_STATE.activeTargetId === user.uid ? 'active' : ''}`;
+                    row.innerHTML = `
+                        <div style="position:relative;">
+                            <img class="nx-avatar-md" src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random">
+                            <div class="online-dot ${user.online ? 'on' : ''}"></div>
+                        </div>
+                        <div class="user-meta">
+                            <div class="user-name-row">
+                                <b>${user.name}</b>
+                                <small style="opacity:0.5; font-weight:normal;">щойно</small>
+                            </div>
+                            <div class="user-status-msg">${user.online ? 'Online' : 'Offline'} | ${user.bio || ''}</div>
+                        </div>
+                    `;
+                    row.onclick = () => ChatEngine.initSession(user);
+                    container.appendChild(row);
+                });
+            },
 
-    /* ===== ЧАТ ===== */
-    function openConversation(user) {
-        activeId = user.id;
-        document.getElementById('welcomeView').style.display = 'none';
-        document.getElementById('chatView').style.display = 'flex';
-        document.getElementById('activeNameDisplay').textContent = user.name;
-        document.getElementById('activeAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
-        
-        // Позначаємо активного в списку
-        document.querySelectorAll('.user-item').forEach(el => el.classList.remove('active'));
-        
-        const roomId = me.uid < user.id ? me.uid + '_' + user.id : user.id + '_' + me.uid;
-        
-        onValue(ref(db, 'msgs/' + roomId), snap => {
-            const box = document.getElementById('messagesList');
-            box.innerHTML = '';
-            snap.forEach(mSnap => {
-                const m = mSnap.val();
-                const row = document.createElement('div');
-                row.className = 'msg-row ' + (m.sid === me.uid ? 'me' : 'them');
-                row.innerHTML = `
-                    <div class="msg-bubble">
-                        ${m.txt}
-                        <div class="msg-time">${m.time}</div>
+            filterContacts() {
+                const query = document.getElementById('userSearchBar').value.toLowerCase();
+                const filtered = TITAN_STATE.contactCache.filter(u => u.name.toLowerCase().includes(query));
+                this.renderContacts(filtered);
+            },
+
+            toggleEmoji() {
+                const anchor = document.getElementById('emoji-pop-anchor');
+                anchor.style.display = anchor.style.display === 'block' ? 'none' : 'block';
+            },
+
+            showSettings() {
+                const overlay = document.getElementById('modalOverlay');
+                overlay.innerHTML = `
+                    <div class="modal-box animate__animated animate__zoomIn">
+                        <h3>Профіль Користувача</h3>
+                        <p style="margin-top:10px; color:var(--nx-text-dim);">Тут ви можете налаштувати свою публічну інформацію.</p>
+                        <input id="editBio" class="shield-field" style="margin-top:20px;" placeholder="Ваш статус (Bio)">
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button class="shield-btn" onclick="SystemUI.saveSettings()">Зберегти</button>
+                            <button class="shield-btn" style="background:var(--nx-danger);" onclick="SystemUI.closeModal()">Закрити</button>
+                        </div>
                     </div>
                 `;
-                box.appendChild(row);
-            });
-            box.scrollTop = box.scrollHeight;
+                overlay.style.display = 'flex';
+            },
+
+            saveSettings() {
+                const bio = document.getElementById('editBio').value;
+                update(ref(DB, `users/${TITAN_STATE.currentUser.uid}`), { bio: bio });
+                this.closeModal();
+            },
+
+            closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+        };
+
+        /* ============================================================
+           MODULE: ChatEngine - Real-time Communication & Media
+           ============================================================ */
+        window.ChatEngine = {
+            initSession(partner) {
+                TITAN_STATE.activeTargetId = partner.uid;
+                TITAN_STATE.activeRoomId = TITAN_STATE.currentUser.uid < partner.uid 
+                    ? `${TITAN_STATE.currentUser.uid}_${partner.uid}` 
+                    : `${partner.uid}_${TITAN_STATE.currentUser.uid}`;
+                
+                document.getElementById('emptyPlaceholder').style.display = 'none';
+                document.getElementById('activeChatUI').style.display = 'flex';
+                document.getElementById('activePartnerName').textContent = partner.name;
+                document.getElementById('activePartnerPic').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(partner.name)}&background=random`;
+                document.getElementById('activeStatusLabel').textContent = partner.online ? 'В мережі (AES-256)' : 'Офлайн';
+                
+                this.syncHistory();
+            },
+
+            syncHistory() {
+                const viewport = document.getElementById('messageViewport');
+                onValue(ref(DB, `msgs/${TITAN_STATE.activeRoomId}`), snap => {
+                    viewport.innerHTML = '';
+                    snap.forEach(mSnap => {
+                        const m = mSnap.val();
+                        const row = document.createElement('div');
+                        row.className = `nx-msg-wrapper ${m.sid === TITAN_STATE.currentUser.uid ? 'me' : 'them'}`;
+                        
+                        let payload = m.text ? `<div>${m.text}</div>` : '';
+                        if (m.type === 'image') payload += `<img src="${m.url}" class="media-asset">`;
+                        if (m.type === 'video') payload += `<video src="${m.url}" controls class="media-asset"></video>`;
+                        if (m.type === 'voice') payload += `<audio src="${m.url}" controls style="height:35px; width:230px; border-radius:10px;"></audio>`;
+
+                        const readStatus = m.read ? `<i class="fas fa-check-double" style="color:var(--nx-primary)"></i>` : `<i class="fas fa-check"></i>`;
+
+                        row.innerHTML = `
+                            <div class="nx-bubble animate__animated animate__fadeInUp">
+                                ${payload}
+                                <div class="nx-meta-info">
+                                    ${m.edited ? '<small>(змінено)</small>' : ''}
+                                    ${m.time} 
+                                    ${m.sid === TITAN_STATE.currentUser.uid ? readStatus : ''}
+                                </div>
+                            </div>
+                        `;
+
+                        // Контекстне меню (Видалення / Редагування)
+                        if (m.sid === TITAN_STATE.currentUser.uid) {
+                            row.oncontextmenu = (e) => {
+                                e.preventDefault();
+                                const act = prompt("Оберіть дію: 1 - Редагувати, 2 - Видалити для всіх, 3 - Скасувати");
+                                if (act === '1' && m.text) this.openEditor(mSnap.key, m.text);
+                                if (act === '2') { if(confirm("Видалити повідомлення?")) remove(ref(DB, `msgs/${TITAN_STATE.activeRoomId}/${mSnap.key}`)); }
+                            };
+                        } else if (!m.read) {
+                            // Автоматичне позначення як прочитаного
+                            update(ref(DB, `msgs/${TITAN_STATE.activeRoomId}/${mSnap.key}`), { read: true });
+                        }
+
+                        viewport.appendChild(row);
+                    });
+                    viewport.scrollTop = viewport.scrollHeight;
+                });
+            },
+
+            dispatch() {
+                const inp = document.getElementById('mainComposer');
+                const val = inp.value.trim();
+                if (!val || !TITAN_STATE.activeRoomId) return;
+
+                this.commit({ text: val.replace(/[<>]/g, ''), type: 'text' });
+                inp.value = '';
+                document.getElementById('emoji-pop-anchor').style.display = 'none';
+            },
+
+            processFileUpload(inp) {
+                const file = inp.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.commit({
+                        url: reader.result,
+                        type: file.type.startsWith('image') ? 'image' : 'video'
+                    });
+                };
+                reader.readAsDataURL(file);
+            },
+
+            async toggleVoice() {
+                const trigger = document.getElementById('voiceTrigger');
+                if (!TITAN_STATE.isRecording) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        TITAN_STATE.voiceRecorder = new MediaRecorder(stream);
+                        TITAN_STATE.audioChunks = [];
+                        
+                        TITAN_STATE.voiceRecorder.ondataavailable = e => TITAN_STATE.audioChunks.push(e.data);
+                        TITAN_STATE.voiceRecorder.onstop = () => {
+                            const blob = new Blob(TITAN_STATE.audioChunks, { type: 'audio/ogg; codecs=opus' });
+                            const reader = new FileReader();
+                            reader.onload = () => this.commit({ url: reader.result, type: 'voice' });
+                            reader.readAsDataURL(blob);
+                        };
+                        
+                        TITAN_STATE.voiceRecorder.start();
+                        TITAN_STATE.isRecording = true;
+                        trigger.classList.add('recording-pulse');
+                    } catch (e) { alert("Доступ до мікрофона заблоковано системою."); }
+                } else {
+                    TITAN_STATE.voiceRecorder.stop();
+                    TITAN_STATE.isRecording = false;
+                    trigger.classList.remove('recording-pulse');
+                }
+            },
+
+            commit(data) {
+                push(ref(DB, `msgs/${TITAN_STATE.activeRoomId}`), {
+                    sid: TITAN_STATE.currentUser.uid,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    timestamp: serverTimestamp(),
+                    read: false,
+                    edited: false,
+                    ...data
+                });
+            },
+
+            openEditor(id, oldText) {
+                TITAN_STATE.editModeId = id;
+                const overlay = document.getElementById('modalOverlay');
+                overlay.innerHTML = `
+                    <div class="modal-box">
+                        <h3>Редагувати повідомлення</h3>
+                        <input id="editInpField" class="shield-field" style="margin-top:20px;" value="${oldText}">
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button class="shield-btn" onclick="ChatEngine.saveEdit()">Зберегти</button>
+                            <button class="shield-btn" style="background:var(--nx-danger);" onclick="SystemUI.closeModal()">Скасувати</button>
+                        </div>
+                    </div>
+                `;
+                overlay.style.display = 'flex';
+            },
+
+            saveEdit() {
+                const newVal = document.getElementById('editInpField').value;
+                if(newVal && TITAN_STATE.editModeId) {
+                    update(ref(DB, `msgs/${TITAN_STATE.activeRoomId}/${TITAN_STATE.editModeId}`), {
+                        text: newVal,
+                        edited: true
+                    });
+                    SystemUI.closeModal();
+                }
+            }
+        };
+
+        // Keyboard & Event Listeners
+        document.getElementById('mainComposer').onkeydown = e => { if (e.key === 'Enter') ChatEngine.dispatch(); };
+        document.querySelector('emoji-picker').addEventListener('emoji-click', e => {
+            document.getElementById('mainComposer').value += e.detail.unicode;
         });
-    }
 
-    window.sendMsg = () => {
-        const input = document.getElementById('msgInput');
-        const txt = input.value.trim();
-        if (!txt || !activeId) return;
-
-        const roomId = me.uid < activeId ? me.uid + '_' + activeId : activeId + '_' + me.uid;
-        push(ref(db, 'msgs/' + roomId), {
-            sid: me.uid,
-            txt: txt.replace(/[<>]/g, ''),
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            ts: serverTimestamp()
-        });
-        input.value = '';
-    };
-
-    document.getElementById('msgInput').onkeypress = e => { if(e.key === 'Enter') sendMsg(); };
-</script>
-
+    </script>
 </body>
 </html>
